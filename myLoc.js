@@ -1,3 +1,9 @@
+
+var ourCoords = {
+    latitude: 51.476852,
+    longitude: -0.000500
+};
+
 window.onload = getMyLocation;
 
 function getMyLocation() {
@@ -14,6 +20,10 @@ function displayLocation(position) {
 
     var div = document.getElementById("location");
     div.innerHTML = "You are at Latitude: " + latitude + ", Longitude: " + longitude;
+
+    var km = computeDistance(position.coords, ourCoords);
+    var distance = document.getElementById("distance");
+    distance.innerHTML = "You are " + km + " km from Greenwich"
 }
 
 function displayError(error) {
@@ -30,3 +40,25 @@ function displayError(error) {
     var div = document.getElementById("location");
     div.innerHTML = errorMessage;
 }
+
+// the following function is the spherical law of Cosines equation
+// - used to work out distance relative to the curvature of the Earth
+function computeDistance(startCoords, destCoords) {
+    var startLatRads = degreesToRadians(startCoords.latitude);
+    var startLongRads = degreesToRadians(startCoords.longitude);
+    var destLatRads = degreesToRadians(destCoords.latitude);
+    var destLongRads = degreesToRadians(destCoords.longitude);
+
+    var Radius = 6371; // radius of the earth in km
+    var distance = Math.acos(Math.sin(startLatRads) * Math.sin(destLatRads) +
+        Math.cos(startLatRads) * Math.cos(destLatRads) *
+        Math.cos(startLongRads - destLongRads)) * Radius;
+
+    return distance.toFixed(2); // toFixed to two decimal places
+}
+
+function degreesToRadians(degrees) {
+    var radians = (degrees * Math.PI) / 180;
+    return radians;
+}
+
