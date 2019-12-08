@@ -14,6 +14,7 @@ function getMyLocation() {
     }
 }
 
+//displays long and lat pos
 function displayLocation(position) {
     var latitude = position.coords.latitude;
     var longitude = position.coords.longitude;
@@ -24,6 +25,9 @@ function displayLocation(position) {
     var km = computeDistance(position.coords, ourCoords);
     var distance = document.getElementById("distance");
     distance.innerHTML = "You are " + km + " km from Greenwich"
+
+    //display map
+    showMap(position.coords);
 }
 
 function displayError(error) {
@@ -62,3 +66,18 @@ function degreesToRadians(degrees) {
     return radians;
 }
 
+
+//load the map
+var map;
+
+function showMap(coords) {
+    var googleLatAndLong = new google.maps.LatLng(coords.latitude, coords.longitude);
+
+    var mapOptions = {
+        zoom: 10,
+        center: googleLatAndLong,
+        mapTypeId: google.maps.MapTypeId.ROADMAP
+    };
+    var mapDiv = document.getElementById("map");
+    map = new google.maps.Map(mapDiv, mapOptions);
+}
